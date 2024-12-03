@@ -17,7 +17,7 @@ const searchSongs = async (req, res, next) => {
       throw new AppError("Please provide a search query", 400);
     }
 
-    const songs = await Song.find({ title }).sort({ createdAt: -1 });
+    const songs = await Song.find({ $or: searchQuery }).sort({ createdAt: -1 });
 
     if (songs.length === 0) {
       throw new AppError("No songs found", 404);

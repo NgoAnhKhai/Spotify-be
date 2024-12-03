@@ -19,5 +19,9 @@ router.get("/:id", getGenreById);
 router.put("/:id", updateGenre);
 
 //Delete Genre
-router.delete("/delete/:id", deleteGenre);
+router.delete(
+  "/delete/:id",
+
+  deleteGenre
+);
 module.exports = router;

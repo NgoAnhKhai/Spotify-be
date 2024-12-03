@@ -10,6 +10,7 @@ const songSchema = new Schema(
     artistID: { type: Schema.Types.ObjectId, ref: "Artist" },
     albumID: { type: Schema.Types.ObjectId, ref: "Album" },
     genreID: [{ type: Schema.Types.ObjectId, ref: "Genre" }],
+
     URL: { type: String, required: true },
   },
   { timestamps: true }

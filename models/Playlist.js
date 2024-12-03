@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const playlistSchema = new Schema(
   {
     title: { type: String, required: true },
-    userID: { type: Schema.Types.ObjectId, ref: "User" },
+    userID: { type: Schema.Types.ObjectId, ref: "User", required: true },
     description: { type: String },
     songs: [{ type: Schema.Types.ObjectId, ref: "Song" }],
     creationDate: { type: Date, default: Date.now },

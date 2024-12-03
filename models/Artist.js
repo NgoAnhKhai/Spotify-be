@@ -12,6 +12,7 @@ const artistSchema = new Schema(
       difficulties: { type: String },
     },
     songs: [{ type: Schema.Types.ObjectId, ref: "Song" }],
+    albums: [{ type: Schema.Types.ObjectId, ref: "Album" }],
   },
 
   { timestamps: true }

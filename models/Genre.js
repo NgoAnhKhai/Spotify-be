@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-// Định nghĩa Schema cho Genre
 const genreSchema = new Schema(
   {
     name: {

@@ -8,6 +8,7 @@ const albumSchema = new Schema(
     releaseDate: { type: Date },
     artistID: { type: Schema.Types.ObjectId, ref: "Artist" },
     coverImageURL: { type: String },
+    genreID: { type: Schema.Types.ObjectId, ref: "Genre" },
     listSong: [{ type: Schema.Types.ObjectId, ref: "Song" }],
   },
   { timestamps: true }
