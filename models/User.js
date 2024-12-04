@@ -11,8 +11,9 @@ const userSchema = new Schema(
       enum: ["Free", "Premium"],
       default: "Free",
     },
+    premiumExpiryDate: { type: Date },
     playlists: [{ type: Schema.Types.ObjectId, ref: "Playlist" }],
-    subscriptionExpireDate: { type: Date },
+    dateJoined: { type: Date, default: Date.now },
   },
   { timestamps: true }
 );

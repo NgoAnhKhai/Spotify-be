@@ -2,17 +2,17 @@ var express = require("express");
 const getAllUser = require("../controllers/user/getAllUser");
 const registerUser = require("../controllers/user/registerUser");
 const loginUser = require("../controllers/user/LoginUser");
-
 const updateUser = require("../controllers/user/updateUser");
 const getUserProfile = require("../controllers/user/getUserProfile");
 const changePassword = require("../controllers/user/changePassword");
 const logoutUser = require("../controllers/user/logoutUser");
-
 const getUserPlaylist = require("../controllers/user/getUserPlaylist");
 const authenticateUser = require("../middlewares/authenticateUser");
-const commonSchema = require("../middlewares/commonValidator");
 const validationMiddleware = require("../middlewares/validation.middleware");
 const updateSubscription = require("../controllers/user/buyPremium");
+const userRegisterValidator = require("../middlewares/userValidator.js/userRegisterValidatior");
+const userLoginValidator = require("../middlewares/userValidator.js/userLoginValidator");
+
 var router = express.Router();
 
 /*
@@ -22,7 +22,7 @@ var router = express.Router();
  */
 router.post(
   "/register",
-  validationMiddleware(commonSchema, "body"),
+  validationMiddleware(userRegisterValidator, "body"),
   registerUser
 );
 
@@ -31,7 +31,11 @@ router.post(
  *@description Login
  *@access register required
  */
-router.post("/login", validationMiddleware(commonSchema, "body"), loginUser);
+router.post(
+  "/login",
+  validationMiddleware(userLoginValidator, "body"),
+  loginUser
+);
 
 /*
  *@route GET /user/
@@ -52,48 +56,28 @@ router.get("/profile", authenticateUser, getUserProfile);
  *@description Chang Password
  *@access Login Required
  */
-router.put(
-  "/Password",
-  validationMiddleware(commonSchema, "body"),
-  authenticateUser,
-  changePassword
-);
+router.put("/Password", authenticateUser, changePassword);
 
 /*
  *@route PUT /user/profile
  *@description update profile user
  *@access Login Required
  */
-router.put(
-  "/profile",
-  validationMiddleware(commonSchema, "body"),
-  authenticateUser,
-  updateUser
-);
+router.put("/profile", authenticateUser, updateUser);
 
 /*
  *@route PUT /user/updateSubscription
  *@description Buy Subscription
  *@access Login Required
  */
-router.put(
-  "/subscription",
-  validationMiddleware(commonSchema, "body"),
-  authenticateUser,
-  updateSubscription
-);
+router.put("/subscription", authenticateUser, updateSubscription);
 
 /*
  *@route GET /user/playlists
  *@description Get The playlist of user
  *@access Login Required
  */
-router.get(
-  "/playlists",
-  validationMiddleware(commonSchema, "params"),
-  authenticateUser,
-  getUserPlaylist
-);
+router.get("/playlists", authenticateUser, getUserPlaylist);
 
 /*
  *@route POST /user/logout

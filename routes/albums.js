@@ -5,29 +5,56 @@ const getAlbumById = require("../controllers/album/getAlbumById");
 const getAlbumsByArtist = require("../controllers/album/getAlbumByArtistId");
 const deleteAlbum = require("../controllers/album/deleteAlbum");
 const updateAlbum = require("../controllers/album/updateAlbum");
-const authenticateUser = require("../middlewares/authenticateUser");
 const validationMiddleware = require("../middlewares/validation.middleware");
-const commonSchema = require("../middlewares/commonValidator");
+const albumValidator = require("../middlewares/albumvalidator/albumValidator");
+const authenticateUser = require("../middlewares/authenticateUser");
 var router = express.Router();
 
-router.post("/create", validationMiddleware(commonSchema, "body"), createAlbum);
-
-router.get("/:id", validationMiddleware(commonSchema, "params"), getAlbumById);
-
-router.get(
-  "/artist/:artistID",
-  validationMiddleware(commonSchema, "params"),
-  getAlbumsByArtist
+/*
+ *@route POST /album/create
+ *@description create Album
+ *@access login required
+ */
+router.post(
+  "/create",
+  validationMiddleware(albumValidator, "body"),
+  authenticateUser,
+  createAlbum
 );
 
-router.get("/", getAllAlbum);
+/*
+ *@route GET /album/:id
+ *@description get album by id album
+ *@access login required
+ */
+router.get("/:id", authenticateUser, getAlbumById);
 
-router.put("/:id", validationMiddleware(commonSchema, "body"), updateAlbum);
+/*
+ *@route GET /album/artist/:artistID
+ *@description get Album by artistID
+ *@access login required
+ */
+router.get("/artist/:artistID", authenticateUser, getAlbumsByArtist);
 
-router.delete(
-  "/:id",
-  validationMiddleware(commonSchema, "params"),
-  deleteAlbum
-);
+/*
+ *@route GET /album/
+ *@description get all Album
+ *@access login required
+ */
+router.get("/", authenticateUser, getAllAlbum);
+
+/*
+ *@route PUT /album/:id
+ *@description update Album by id
+ *@access login required
+ */
+router.put("/:id", authenticateUser, updateAlbum);
+
+/*
+ *@route DELETE /album/:id
+ *@description delete album by id album
+ *@access login required
+ */
+router.delete("/:id", authenticateUser, deleteAlbum);
 
 module.exports = router;

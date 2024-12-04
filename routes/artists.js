@@ -1,28 +1,51 @@
 var express = require("express");
-const getAllArtist = require("../controllers/artist/GetAllArtist");
+const getAllArtist = require("../controllers/artist/getAllArtist");
 const createArtist = require("../controllers/artist/createArtist");
 const deleteArtist = require("../controllers/artist/deleteArtist");
 const getArtistById = require("../controllers/artist/getArtistById");
 const updateArtist = require("../controllers/artist/updateArtist");
 const validationMiddleware = require("../middlewares/validation.middleware");
-const commonSchema = require("../middlewares/commonValidator");
+const artistValidator = require("../middlewares/artistValidator.js/createArtistValidator");
+const authenticateUser = require("../middlewares/authenticateUser");
 var router = express.Router();
 
-router.get("/", getAllArtist);
+/*
+ *@route GET /artist/
+ *@description get all artist
+ *@access login required
+ */
+router.get("/", authenticateUser, getAllArtist);
 
+/*
+ *@route POST /artist/create
+ *@description create artist
+ *@access login required
+ */
 router.post(
   "/create",
-  validationMiddleware(commonSchema, "body"),
+  validationMiddleware(artistValidator, "body"),
+  authenticateUser,
   createArtist
 );
 
-router.get("/:id", validationMiddleware(commonSchema, "params"), getArtistById);
+/*
+ *@route GET /artist/:id
+ *@description get Artist By ID
+ *@access login required
+ */
+router.get("/:id", authenticateUser, getArtistById);
 
-router.put("/:id", validationMiddleware(commonSchema, "params"), updateArtist);
+/*
+ *@route PUT /artist/:id
+ *@description update Information Of Artist
+ *@access login required
+ */
+router.put("/:id", authenticateUser, updateArtist);
 
-router.delete(
-  "/delete/:id",
-  validationMiddleware(commonSchema, "params"),
-  deleteArtist
-);
+/*
+ *@route GET /artist/
+ *@description get all artist
+ *@access private
+ */
+router.delete("/delete/:id", deleteArtist);
 module.exports = router;

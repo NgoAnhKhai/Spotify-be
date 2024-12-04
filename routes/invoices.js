@@ -11,33 +11,39 @@ const deleteInvoice = require("../controllers/invoice/deleteInvoice");
 
 var router = express.Router();
 
-//Gett All Invoice (Admin Feature)
+/*
+ *@route GET /invoice/
+ *@description get all invoice
+ *@access private
+ */
 router.get("/", getAllInvoice);
 
-//Create Invoice
-router.post(
-  "/create",
-  validationMiddleware(commonSchema, "bodys"),
-  authenticateUser,
-  createInvoice
-);
+/*
+ *@route POST /invoice/create
+ *@description create invoice
+ *@access login required
+ */
+router.post("/create", authenticateUser, createInvoice);
 
-//Get Invoice User
-router.get(
-  "/user/:id",
-  validationMiddleware(commonSchema, "params"),
-  authenticateUser,
-  getUserInvoices
-);
+/*
+ *@route GET /invoice/user/:id
+ *@description get invoice of user
+ *@access login required
+ */
+router.get("/user/:id", authenticateUser, getUserInvoices);
 
-//GetInvoiceId
-router.get(
-  "/:id",
-  validationMiddleware(commonSchema, "params"),
-  authenticateUser,
-  getInvoiceById
-);
+/*
+ *@route GET /invoice/:id
+ *@description get invoice by id invoice
+ *@access login required
+ */
+router.get("/:id", authenticateUser, getInvoiceById);
 
+/*
+ *@route DELETE /invoice/delete/:id
+ *@description delete invoice by id
+ *@access login required
+ */
 router.delete("/delete/:id", authenticateUser, deleteInvoice);
 
 module.exports = router;
