@@ -1,50 +1,32 @@
 const { AppError, sendResponse } = require("../../helpers/utils");
+const Artist = require("../../models/artist");
 const Song = require("../../models/song");
 
-const updateSong = async (req, res, next) => {
-  const songId = req.params.id;
-  const updatedInfo = req.body;
-
-  if (!updatedInfo) {
-    throw new AppError("Please provide song information to update", 400);
-  }
+const updateSong = async (req, res) => {
+  const { id } = req.params;
+  const { title, duration, popularity, artistID, albumID, genreID, URL } =
+    req.body;
 
   try {
-    const song = await Song.findById(songId);
+    const updatedSong = await Song.findByIdAndUpdate(
+      id,
+      { title, duration, popularity, artistID, albumID, genreID, URL },
+      { new: true }
+    );
 
-    if (!song) {
-      throw new AppError("Song not found", 404);
+    if (!updatedSong) {
+      throw new AppError("not found", 400);
     }
 
-    const existingSong = await Song.findOne({
-      title: updatedInfo.title,
-      artistID: updatedInfo.artistID,
-      _id: { $ne: songId },
-    });
-
-    if (existingSong) {
-      throw new AppError(
-        "Song already exists with the same title and artist",
-        400
-      );
+    const artist = await Artist.findById(artistID);
+    if (artist) {
+      if (!artist.songs.includes(updatedSong._id)) {
+        artist.songs.push(updatedSong._id);
+        await artist.save();
+      }
     }
 
-    song.title = updatedInfo.title || song.title;
-    song.artistID = updatedInfo.artistID || song.artistID;
-    song.genreID = updatedInfo.genreID || song.genreID;
-    song.duration = updatedInfo.duration || song.duration;
-    song.popularity = updatedInfo.popularity || song.popularity;
-    song.URL = updatedInfo.URL || song.URL;
-
-    await song.save();
-
-    await song.populate({
-      path: "genreID",
-      model: "Genre",
-      select: "name description",
-    });
-
-    sendResponse(res, 200, true, { song }, null, "Song updated successfully");
+    sendResponse(res, 200, true, { updatedSong }, null, "updated successfully");
   } catch (error) {
     next(error);
   }

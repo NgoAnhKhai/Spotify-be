@@ -9,37 +9,61 @@ const changePassword = require("../controllers/user/changePassword");
 const logoutUser = require("../controllers/user/logoutUser");
 
 const getUserPlaylist = require("../controllers/user/getUserPlaylist");
-const updateSubscription = require("../controllers/user/updateSubscription");
 const authenticateUser = require("../middlewares/authenticateUser");
 const commonSchema = require("../middlewares/commonValidator");
 const validationMiddleware = require("../middlewares/validation.middleware");
+const updateSubscription = require("../controllers/user/buyPremium");
 var router = express.Router();
 
-//Register
+/*
+ *@route POST /user/register
+ *@description register
+ *@access public
+ */
 router.post(
   "/register",
   validationMiddleware(commonSchema, "body"),
   registerUser
 );
 
-//Login
+/*
+ *@route POST /user/login
+ *@description Login
+ *@access register required
+ */
 router.post("/login", validationMiddleware(commonSchema, "body"), loginUser);
 
-//Get All User (Admin Feture)
+/*
+ *@route GET /user/
+ *@description Get All User(For Admin)
+ *@access private
+ */
 router.get("/", getAllUser);
 
-//get User Profile
+/*
+ *@route GET /user/profile
+ *@description Get The Profile Of user
+ *@access Login Required
+ */
 router.get("/profile", authenticateUser, getUserProfile);
 
-//changePassword
+/*
+ *@route PUT /user/password
+ *@description Chang Password
+ *@access Login Required
+ */
 router.put(
-  "/changePassword",
+  "/Password",
   validationMiddleware(commonSchema, "body"),
   authenticateUser,
   changePassword
 );
 
-//Update user
+/*
+ *@route PUT /user/profile
+ *@description update profile user
+ *@access Login Required
+ */
 router.put(
   "/profile",
   validationMiddleware(commonSchema, "body"),
@@ -47,15 +71,23 @@ router.put(
   updateUser
 );
 
-//updateSubscription
+/*
+ *@route PUT /user/updateSubscription
+ *@description Buy Subscription
+ *@access Login Required
+ */
 router.put(
-  "/updateSubscription",
+  "/subscription",
   validationMiddleware(commonSchema, "body"),
   authenticateUser,
   updateSubscription
 );
 
-//User Playlist
+/*
+ *@route GET /user/playlists
+ *@description Get The playlist of user
+ *@access Login Required
+ */
 router.get(
   "/playlists",
   validationMiddleware(commonSchema, "params"),
@@ -63,7 +95,11 @@ router.get(
   getUserPlaylist
 );
 
-//Logout user
-router.post("/logout", logoutUser);
+/*
+ *@route POST /user/logout
+ *@description Logout User
+ *@access login Required
+ */
+router.post("/logout", authenticateUser, logoutUser);
 
 module.exports = router;

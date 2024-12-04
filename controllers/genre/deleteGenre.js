@@ -20,7 +20,6 @@ const deleteGenre = async (req, res, next) => {
       "Genre deleted successfully!"
     );
   } catch (error) {
-    // Xử lý lỗi nếu có
     next(error);
   }
 };

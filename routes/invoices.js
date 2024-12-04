@@ -7,6 +7,8 @@ const authenticateUser = require("../middlewares/authenticateUser");
 const validationMiddleware = require("../middlewares/validation.middleware");
 const commonSchema = require("../middlewares/commonValidator");
 
+const deleteInvoice = require("../controllers/invoice/deleteInvoice");
+
 var router = express.Router();
 
 //Gett All Invoice (Admin Feature)
@@ -32,7 +34,10 @@ router.get(
 router.get(
   "/:id",
   validationMiddleware(commonSchema, "params"),
+  authenticateUser,
   getInvoiceById
 );
+
+router.delete("/delete/:id", authenticateUser, deleteInvoice);
 
 module.exports = router;

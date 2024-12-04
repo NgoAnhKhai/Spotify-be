@@ -7,6 +7,7 @@ const searchSongs = require("../controllers/song/searchSong");
 const deleteSong = require("../controllers/song/deleteSong");
 const validationMiddleware = require("../middlewares/validation.middleware");
 const commonSchema = require("../middlewares/commonValidator");
+const addSongToAlbum = require("../controllers/song/addSongToAlbum");
 var router = express.Router();
 
 router.post("/create", validationMiddleware(commonSchema, "body"), createSong);
@@ -16,8 +17,11 @@ router.get("/", getAllSong);
 router.put(
   "/update/:id",
   validationMiddleware(commonSchema, "params"),
+
   updateSong
 );
+
+router.put("/:id", addSongToAlbum);
 
 router.get("/search", searchSongs);
 

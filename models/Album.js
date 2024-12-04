@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-// Định nghĩa Schema cho Album
 const albumSchema = new Schema(
   {
     title: { type: String, required: true },

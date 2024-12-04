@@ -10,40 +10,23 @@ const validationMiddleware = require("../middlewares/validation.middleware");
 const commonSchema = require("../middlewares/commonValidator");
 var router = express.Router();
 
-router.post(
-  "/create",
-  validationMiddleware(commonSchema, "body"),
-  authenticateUser,
-  createAlbum
-);
+router.post("/create", validationMiddleware(commonSchema, "body"), createAlbum);
 
-router.get(
-  "/:id",
-  validationMiddleware(commonSchema, "params"),
-  authenticateUser,
-  getAlbumById
-);
+router.get("/:id", validationMiddleware(commonSchema, "params"), getAlbumById);
 
 router.get(
   "/artist/:artistID",
   validationMiddleware(commonSchema, "params"),
-  authenticateUser,
   getAlbumsByArtist
 );
 
-router.get("/", authenticateUser, getAllAlbum);
+router.get("/", getAllAlbum);
 
-router.put(
-  "/",
-  validationMiddleware(commonSchema, "body"),
-  authenticateUser,
-  updateAlbum
-);
+router.put("/:id", validationMiddleware(commonSchema, "body"), updateAlbum);
 
 router.delete(
   "/:id",
   validationMiddleware(commonSchema, "params"),
-  authenticateUser,
   deleteAlbum
 );
 

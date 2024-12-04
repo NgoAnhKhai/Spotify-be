@@ -1,11 +1,10 @@
-const Invoice = require("../../models/Invoice");
 const { sendResponse, AppError } = require("../../helpers/utils");
+const Invoice = require("../../models/invoice");
 
 const getInvoiceById = async (req, res, next) => {
   try {
     const filter = req.params.id;
 
-    // Lấy hóa đơn theo ID và populate thông tin của userID
     const invoice = await Invoice.findById(filter).populate("userID");
 
     if (!invoice) {
@@ -13,7 +12,6 @@ const getInvoiceById = async (req, res, next) => {
     }
     console.log(invoice);
 
-    // Trả về thông tin hóa đơn
     sendResponse(
       res,
       200,

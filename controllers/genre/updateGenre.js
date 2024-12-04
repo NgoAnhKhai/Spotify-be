@@ -6,18 +6,15 @@ const updateGenre = async (req, res, next) => {
   const { name, description } = req.body;
 
   try {
-    // Tìm thể loại theo ID
     const genre = await Genre.findById(id);
 
     if (!genre) {
       throw new AppError(404, "Genre not found", "NotFound");
     }
 
-    // Cập nhật các trường nếu có
     genre.name = name || genre.name;
     genre.description = description || genre.description;
 
-    // Lưu thay đổi
     await genre.save();
 
     sendResponse(

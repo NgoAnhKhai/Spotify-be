@@ -1,5 +1,5 @@
-const Invoice = require("../../models/Invoice");
 const { sendResponse, AppError } = require("../../helpers/utils");
+const Invoice = require("../../models/invoice");
 
 const getUserInvoices = async (req, res, next) => {
   try {

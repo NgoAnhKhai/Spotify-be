@@ -18,21 +18,26 @@ const addSongToPlaylist = async (req, res, next) => {
 
     const songsToAdd = Array.isArray(songIds) ? songIds : [songIds];
 
-    for (const songId of songsToAdd) {
+    const existingSongs = playlist.songs;
+    const newSongs = songsToAdd.filter(
+      (songId) => !existingSongs.includes(songId)
+    );
+
+    if (newSongs.length === 0) {
+      throw new AppError(
+        "All the provided songs already exist in the playlist",
+        400
+      );
+    }
+
+    for (const songId of newSongs) {
       const songExists = await Song.findById(songId);
       if (!songExists) {
         throw new AppError(`Song with id ${songId} not found`, 404);
       }
-
-      if (playlist.songs.includes(songId)) {
-        throw new AppError(
-          `Song with id ${songId} already exists in the playlist`,
-          400
-        );
-      }
     }
 
-    playlist.songs.push(...songsToAdd);
+    playlist.songs.push(...newSongs);
 
     await playlist.save();
 

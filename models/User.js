@@ -12,7 +12,7 @@ const userSchema = new Schema(
       default: "Free",
     },
     playlists: [{ type: Schema.Types.ObjectId, ref: "Playlist" }],
-    dateJoined: { type: Date, default: Date.now },
+    subscriptionExpireDate: { type: Date },
   },
   { timestamps: true }
 );
