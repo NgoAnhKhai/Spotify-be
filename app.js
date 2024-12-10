@@ -44,10 +44,7 @@ app.use((req, res, next) => {
   const err = new AppError(404, "Not Found");
   next(err);
 });
-app.use((req, res, next) => {
-  const err = new AppError(404, "Not Found", "Bad Request");
-  next(err);
-});
+
 app.use((err, req, res, next) => {
   console.log("ERROR", err);
   return sendResponse(

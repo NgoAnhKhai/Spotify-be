@@ -6,7 +6,7 @@ const authenticate = (roles = "user") => {
     roles = [roles];
   }
   return (req, res, next) => {
-    const token = req.header("Authorization");
+    const token = req.header("Authorization")?.replace("Bearer ", "");
     if (!token) {
       throw new AppError("Token not provided", 404);
     }
