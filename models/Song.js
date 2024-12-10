@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const songSchema = new Schema(
   {
     title: { type: String, required: true },
-    duration: { type: Number, required: true },
+    duration: { type: String, required: true },
     popularity: { type: Number, default: 0 },
     artistID: {
       type: mongoose.Schema.Types.ObjectId,

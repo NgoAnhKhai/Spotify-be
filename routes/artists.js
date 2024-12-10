@@ -5,47 +5,24 @@ const deleteArtist = require("../controllers/artist/deleteArtist");
 const getArtistById = require("../controllers/artist/getArtistById");
 const updateArtist = require("../controllers/artist/updateArtist");
 const validationMiddleware = require("../middlewares/validation.middleware");
-const artistValidator = require("../middlewares/artistValidator.js/createArtistValidator");
-const authenticateUser = require("../middlewares/authenticateUser");
+const createArtistSchema = require("../controllers/src/artistSchemaValidator/createArtistSchema");
+const updateArtistSchema = require("../controllers/src/artistSchemaValidator/updateArtistSchema");
+const authenticate = require("../middlewares/authenticate");
+
 var router = express.Router();
 
 /*
- *@route GET /artist/
+ *@route GET /artists/
  *@description get all artist
  *@access login required
  */
-router.get("/", authenticateUser, getAllArtist);
+router.get("/", authenticate(["user", "admin"]), getAllArtist);
 
 /*
- *@route POST /artist/create
- *@description create artist
- *@access login required
- */
-router.post(
-  "/create",
-  validationMiddleware(artistValidator, "body"),
-  authenticateUser,
-  createArtist
-);
-
-/*
- *@route GET /artist/:id
+ *@route GET /artists/:id
  *@description get Artist By ID
  *@access login required
  */
-router.get("/:id", authenticateUser, getArtistById);
+router.get("/:id", authenticate(["user", "admin"]), getArtistById);
 
-/*
- *@route PUT /artist/:id
- *@description update Information Of Artist
- *@access login required
- */
-router.put("/:id", authenticateUser, updateArtist);
-
-/*
- *@route GET /artist/
- *@description get all artist
- *@access private
- */
-router.delete("/delete/:id", deleteArtist);
 module.exports = router;

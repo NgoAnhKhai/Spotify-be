@@ -11,9 +11,18 @@ const userSchema = new Schema(
       enum: ["Free", "Premium"],
       default: "Free",
     },
+    role: {
+      type: String,
+      enum: ["user", "artist", "admin", "staff"],
+      default: "user",
+      required: true,
+    },
     premiumExpiryDate: { type: Date },
     playlists: [{ type: Schema.Types.ObjectId, ref: "Playlist" }],
-    dateJoined: { type: Date, default: Date.now },
+    remainingDays: {
+      type: Number,
+      default: null,
+    },
   },
   { timestamps: true }
 );

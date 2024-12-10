@@ -11,7 +11,6 @@ const createInvoice = async (req, res, next) => {
         .status(404)
         .json({ success: false, message: "User not found" });
     }
-    console.log("user", user);
 
     if (user.subscriptionType === "Premium") {
       return res.status(400).json({
@@ -31,13 +30,26 @@ const createInvoice = async (req, res, next) => {
 
     user.subscriptionType = "Premium";
     user.paymentStatus = "Paid";
+    user.premiumExpiryDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+
+    const remainingDays = Math.ceil(
+      (user.premiumExpiryDate - Date.now()) / (1000 * 3600 * 24)
+    );
+    user.remainingDays = remainingDays;
+
     await user.save();
 
     sendResponse(
       res,
       200,
       true,
-      { invoice: newInvoice },
+      {
+        invoice: newInvoice,
+        user: {
+          ...user.toObject(),
+          remainingDays,
+        },
+      },
       null,
       "Invoice created and user subscription upgraded to Premium!"
     );

@@ -1,18 +1,45 @@
-const { sendResponse } = require("../../helpers/utils");
+const { sendResponse, AppError } = require("../../helpers/utils");
 const Album = require("../../models/Album");
 
 const getAllAlbum = async (req, res, next) => {
-  const album = await Album.find();
-  if (!album || album.length === 0) {
-    return sendResponse(res, 404, false, null, null, "No found");
+  try {
+    const limit = parseInt(req.query.limit) || 4;
+    const page = parseInt(req.query.page) || 1;
+    const skip = (page - 1) * limit;
+
+    const albums = await Album.find()
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 })
+      .exec();
+
+    const totalAlbums = await Album.countDocuments();
+
+    if (!albums || albums.length === 0) {
+      return sendResponse(res, 404, false, null, null, "No albums found");
+    }
+
+    const totalPages = Math.ceil(totalAlbums / limit);
+
+    sendResponse(
+      res,
+      200,
+      true,
+      {
+        albums,
+        pagination: {
+          page,
+          limit,
+          totalPages,
+          totalAlbums,
+        },
+      },
+      null,
+      "Albums retrieved successfully"
+    );
+  } catch (error) {
+    next(error);
   }
-  sendResponse(
-    res,
-    200,
-    true,
-    { albums: album },
-    null,
-    "Invoices retrieved successfully"
-  );
 };
+
 module.exports = getAllAlbum;

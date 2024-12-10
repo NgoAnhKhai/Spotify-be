@@ -1,6 +1,14 @@
-var express = require("express");
-var router = express.Router();
-
+const express = require("express");
+const router = express.Router();
+const users = require("./users");
+const songs = require("./songs");
+const playlists = require("./playlists");
+const artists = require("./artists");
+const albums = require("./albums");
+const authentications = require("./authentication");
+const genres = require("./genres");
+const invoices = require("./invoices");
+const admin = require("./admin");
 router.get("/template/:test", async (req, res, next) => {
   const { test } = req.params;
   try {
@@ -21,25 +29,21 @@ router.get("/template/:test", async (req, res, next) => {
     next(err);
   }
 });
-const users = require("./users");
-router.use("/user", users);
+router.use("/users", users);
 
-const songs = require("./songs");
-router.use("/song", songs);
+router.use("/songs", songs);
 
-const playlists = require("./playlists");
-router.use("/playlist", playlists);
+router.use("/playlists", playlists);
 
-const invoices = require("./invoices");
-router.use("/invoice", invoices);
+router.use("/invoices", invoices);
 
-const genres = require("./genres");
-router.use("/genre", genres);
+router.use("/genres", genres);
 
-const artists = require("./artists");
-router.use("/artist", artists);
+router.use("/artists", artists);
 
-const albums = require("./albums");
-router.use("/album", albums);
+router.use("/albums", albums);
 
+router.use("/admin", admin);
+
+router.use("/authentications", authentications);
 module.exports = router;

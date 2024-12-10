@@ -4,9 +4,9 @@ const Song = require("../../models/song");
 
 const addSongToPlaylist = async (req, res, next) => {
   const { id } = req.params;
-  const { songIds } = req.body;
+  const { songID } = req.body;
 
-  if (!songIds || songIds.length === 0) {
+  if (!songID || songID.length === 0) {
     throw new AppError("Please provide songId(s)", 400);
   }
 
@@ -16,11 +16,11 @@ const addSongToPlaylist = async (req, res, next) => {
       throw new AppError("Playlist not found", 404);
     }
 
-    const songsToAdd = Array.isArray(songIds) ? songIds : [songIds];
+    const songsToAdd = Array.isArray(songID) ? songID : [songID];
 
     const existingSongs = playlist.songs;
     const newSongs = songsToAdd.filter(
-      (songId) => !existingSongs.includes(songId)
+      (songID) => !existingSongs.includes(songID)
     );
 
     if (newSongs.length === 0) {
@@ -30,10 +30,10 @@ const addSongToPlaylist = async (req, res, next) => {
       );
     }
 
-    for (const songId of newSongs) {
-      const songExists = await Song.findById(songId);
+    for (const songID of newSongs) {
+      const songExists = await Song.findById(songID);
       if (!songExists) {
-        throw new AppError(`Song with id ${songId} not found`, 404);
+        throw new AppError(`Song with id ${songID} not found`, 404);
       }
     }
 

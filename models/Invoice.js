@@ -21,6 +21,8 @@ const invoiceSchema = new Schema(
       enum: ["Paid", "Pending", "Failed"],
       default: "Pending",
     },
+    premiumExpiryDate: { type: Date },
+    remainingDays: { type: Number },
   },
   { timestamps: true }
 );

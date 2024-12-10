@@ -1,89 +1,56 @@
 var express = require("express");
-const getAllUser = require("../controllers/user/getAllUser");
-const registerUser = require("../controllers/user/registerUser");
-const loginUser = require("../controllers/user/LoginUser");
-const updateUser = require("../controllers/user/updateUser");
-const getUserProfile = require("../controllers/user/getUserProfile");
-const changePassword = require("../controllers/user/changePassword");
-const logoutUser = require("../controllers/user/logoutUser");
-const getUserPlaylist = require("../controllers/user/getUserPlaylist");
-const authenticateUser = require("../middlewares/authenticateUser");
-const validationMiddleware = require("../middlewares/validation.middleware");
-const updateSubscription = require("../controllers/user/buyPremium");
-const userRegisterValidator = require("../middlewares/userValidator.js/userRegisterValidatior");
-const userLoginValidator = require("../middlewares/userValidator.js/userLoginValidator");
-
+const getUserProfile = require("../controllers/user/usersManagement/getUserProfile");
+const changePassword = require("../controllers/user/usersManagement/changePassword");
+const updateSubscription = require("../controllers/user/usersManagement/updateSubscription");
+const getUserPlaylist = require("../controllers/user/usersManagement/getUserPlaylist");
+const updateUser = require("../controllers/user/usersManagement/updateUser");
+const cancelSubscription = require("../controllers/user/usersManagement/cancelSubscription");
+const authenticate = require("../middlewares/authenticate");
 var router = express.Router();
 
 /*
- *@route POST /user/register
- *@description register
- *@access public
- */
-router.post(
-  "/register",
-  validationMiddleware(userRegisterValidator, "body"),
-  registerUser
-);
-
-/*
- *@route POST /user/login
- *@description Login
- *@access register required
- */
-router.post(
-  "/login",
-  validationMiddleware(userLoginValidator, "body"),
-  loginUser
-);
-
-/*
- *@route GET /user/
- *@description Get All User(For Admin)
- *@access private
- */
-router.get("/", getAllUser);
-
-/*
- *@route GET /user/profile
+ *@route GET /users/:id/profile
  *@description Get The Profile Of user
  *@access Login Required
  */
-router.get("/profile", authenticateUser, getUserProfile);
+router.get("/:id/profile", authenticate(["user", "admin"]), getUserProfile);
 
 /*
- *@route PUT /user/password
- *@description Chang Password
- *@access Login Required
- */
-router.put("/Password", authenticateUser, changePassword);
-
-/*
- *@route PUT /user/profile
+ *@route PUT /users/:id/profile
  *@description update profile user
  *@access Login Required
  */
-router.put("/profile", authenticateUser, updateUser);
+router.put("/:id/profile", authenticate(["user", "admin"]), updateUser);
+/*
+ *@route PUT /users/:id/profile/password
+ *@description Change Password
+ *@access Login Required
+ */
+router.put(
+  "/:id/profile/password",
+  authenticate(["user", "admin"]),
+  changePassword
+);
 
 /*
- *@route PUT /user/updateSubscription
+ *@route PUT /users/:id/buy
  *@description Buy Subscription
  *@access Login Required
  */
-router.put("/subscription", authenticateUser, updateSubscription);
+router.put("/:id/buy", authenticate(["user", "admin"]), updateSubscription);
 
 /*
- *@route GET /user/playlists
+ *@route PUT /users/:id/cancel
+ *@description cancel Subscription
+ *@access Login Required
+ */
+router.put("/:id/cancel", authenticate(["user", "admin"]), cancelSubscription);
+
+/*
+ *@route GET /users/playlists
  *@description Get The playlist of user
  *@access Login Required
  */
-router.get("/playlists", authenticateUser, getUserPlaylist);
-
-/*
- *@route POST /user/logout
- *@description Logout User
- *@access login Required
- */
-router.post("/logout", authenticateUser, logoutUser);
+router.get("/:id/playlists", authenticate(["user", "admin"]), getUserPlaylist);
 
 module.exports = router;

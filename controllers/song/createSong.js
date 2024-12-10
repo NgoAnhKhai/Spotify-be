@@ -27,25 +27,32 @@ const createSong = async (req, res, next) => {
     const song = await Song.create(info);
 
     const artist = await Artist.findById(info.artistID);
-    const album = await Album.findById(info.albumID);
     if (artist) {
+      if (!Array.isArray(artist.songs)) {
+        artist.songs = [];
+      }
       artist.songs.push(song._id);
       await artist.save();
+    } else {
+      throw new AppError("Artist not found", 404);
     }
 
+    const album = await Album.findById(info.albumID);
     if (album) {
+      if (!Array.isArray(album.songs)) {
+        album.songs = [];
+      }
       album.songs.push(song._id);
-      await album.save({
-        path: "albumID",
-        model: "Album",
-        select: "name releaseDate",
-      });
+      await album.save();
+    } else {
+      throw new AppError("Album not found", 404);
     }
+
     await song.populate([
       {
         path: "albumID",
         model: "Album",
-        select: "name releaseDate",
+        select: "title releaseDate",
       },
     ]);
 

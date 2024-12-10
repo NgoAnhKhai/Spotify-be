@@ -2,7 +2,7 @@ const { AppError, sendResponse } = require("../../helpers/utils");
 const Song = require("../../models/song");
 
 const searchSongs = async (req, res, next) => {
-  const { title } = req.query;
+  const { title, page = 1, limit = 5 } = req.query;
   try {
     const searchQuery = [];
 
@@ -16,14 +16,36 @@ const searchSongs = async (req, res, next) => {
     if (searchQuery.length === 0) {
       throw new AppError("Please provide a search query", 400);
     }
-
-    const songs = await Song.find({ $or: searchQuery }).sort({ createdAt: -1 });
+    const skip = (page - 1) * limit;
+    const songs = await Song.find({ $or: searchQuery })
+      .skip(skip)
+      .limit(parseInt(limit))
+      .sort({ createdAt: -1 })
+      .exec();
+    const totalSongs = await Song.countDocuments({ $or: searchQuery });
 
     if (songs.length === 0) {
       throw new AppError("No songs found", 404);
     }
 
-    sendResponse(res, 200, true, { songs }, null, "Songs found successfully");
+    const totalPages = Math.ceil(totalSongs / limit);
+
+    sendResponse(
+      res,
+      200,
+      true,
+      {
+        songs,
+        pagination: {
+          limit: parseInt(limit),
+          page: parseInt(page),
+          totalPages,
+          totalSongs,
+        },
+      },
+      null,
+      "Songs found successfully"
+    );
   } catch (error) {
     next(error);
   }

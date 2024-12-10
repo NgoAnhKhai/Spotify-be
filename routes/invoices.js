@@ -1,49 +1,22 @@
 var express = require("express");
-const getAllInvoice = require("../controllers/invoice/getAllInvoice");
 const createInvoice = require("../controllers/invoice/createInvoice");
 const getUserInvoices = require("../controllers/invoice/getInvoiceUser");
-const getInvoiceById = require("../controllers/invoice/getInvoiceById");
-const authenticateUser = require("../middlewares/authenticateUser");
-const validationMiddleware = require("../middlewares/validation.middleware");
-const commonSchema = require("../middlewares/commonValidator");
-
-const deleteInvoice = require("../controllers/invoice/deleteInvoice");
+const authenticate = require("../middlewares/authenticate");
 
 var router = express.Router();
 
 /*
- *@route GET /invoice/
- *@description get all invoice
- *@access private
- */
-router.get("/", getAllInvoice);
-
-/*
- *@route POST /invoice/create
+ *@route POST /invoices/:id
  *@description create invoice
  *@access login required
  */
-router.post("/create", authenticateUser, createInvoice);
+router.post("/:id", authenticate(["user", "admin"]), createInvoice);
 
 /*
- *@route GET /invoice/user/:id
+ *@route GET /invoices/users/:id
  *@description get invoice of user
  *@access login required
  */
-router.get("/user/:id", authenticateUser, getUserInvoices);
-
-/*
- *@route GET /invoice/:id
- *@description get invoice by id invoice
- *@access login required
- */
-router.get("/:id", authenticateUser, getInvoiceById);
-
-/*
- *@route DELETE /invoice/delete/:id
- *@description delete invoice by id
- *@access login required
- */
-router.delete("/delete/:id", authenticateUser, deleteInvoice);
+router.get("/users/:id", authenticate(["user", "admin"]), getUserInvoices);
 
 module.exports = router;

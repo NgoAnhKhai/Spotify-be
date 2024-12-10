@@ -1,68 +1,29 @@
 var express = require("express");
 const getAllSong = require("../controllers/song/getAllSong");
-const createSong = require("../controllers/song/createSong");
-const updateSong = require("../controllers/song/updateSong");
 const getSongById = require("../controllers/song/getSongById");
 const searchSongs = require("../controllers/song/searchSong");
-const deleteSong = require("../controllers/song/deleteSong");
-const validationMiddleware = require("../middlewares/validation.middleware");
-const addSongToAlbum = require("../controllers/song/addSongToAlbum");
-const createSongValidator = require("../middlewares/songValidator.js/songCreateValidator");
-const authenticateUser = require("../middlewares/authenticateUser");
+const authenticate = require("../middlewares/authenticate");
 var router = express.Router();
 
 /*
- *@route POST /song/create
- *@description create song
- *@access login required
- */
-router.post(
-  "/create",
-  validationMiddleware(createSongValidator, "body"),
-  authenticateUser,
-  createSong
-);
-
-/*
- *@route GET /song/
+ *@route GET /songs
  *@description Get all song
- *@access login required
+ *@access public
  */
-router.get("/", authenticateUser, getAllSong);
+router.get("/", getAllSong);
 
 /*
- *@route PUT /song/update/:id
- *@description update Song
- *@access login required
- */
-router.put("/update/:id", authenticateUser, updateSong);
-
-/*
- *@route PUT /song/:id
- *@description add song to album
- *@access login required
- */
-router.put("/:id", authenticateUser, addSongToAlbum);
-
-/*
- *@route GET /song/search
+ *@route GET /songs/search?title=...
  *@description search song by name
- *@access login required
+ *@access public
  */
-router.get("/search", authenticateUser, searchSongs);
+router.get("/search", searchSongs);
 
 /*
- *@route GET /song/:id
+ *@route GET /songs/:id
  *@description get song by id song
  *@access login required
  */
-router.get("/:id", authenticateUser, getSongById);
-
-/*
- *@route DELETE /song/delete/:id
- *@description delete song
- *@access login required
- */
-router.delete("/delete/:id", authenticateUser, deleteSong);
+router.get("/:id", authenticate(["user", "admin"]), getSongById);
 
 module.exports = router;

@@ -1,60 +1,34 @@
 var express = require("express");
 const getAllAlbum = require("../controllers/album/getAllAlbum");
-const createAlbum = require("../controllers/album/createAlbum");
 const getAlbumById = require("../controllers/album/getAlbumById");
 const getAlbumsByArtist = require("../controllers/album/getAlbumByArtistId");
-const deleteAlbum = require("../controllers/album/deleteAlbum");
-const updateAlbum = require("../controllers/album/updateAlbum");
-const validationMiddleware = require("../middlewares/validation.middleware");
-const albumValidator = require("../middlewares/albumvalidator/albumValidator");
-const authenticateUser = require("../middlewares/authenticateUser");
+const authenticate = require("../middlewares/authenticate");
+
 var router = express.Router();
 
 /*
- *@route POST /album/create
- *@description create Album
- *@access login required
- */
-router.post(
-  "/create",
-  validationMiddleware(albumValidator, "body"),
-  authenticateUser,
-  createAlbum
-);
-
-/*
- *@route GET /album/:id
+ *@route GET /albums/:id
  *@description get album by id album
  *@access login required
  */
-router.get("/:id", authenticateUser, getAlbumById);
+router.get("/:id", getAlbumById);
 
 /*
- *@route GET /album/artist/:artistID
+ *@route GET /albums/artist/:artistID
  *@description get Album by artistID
  *@access login required
  */
-router.get("/artist/:artistID", authenticateUser, getAlbumsByArtist);
+router.get(
+  "/artists/:artistID",
+  authenticate(["user", "admin"]),
+  getAlbumsByArtist
+);
 
 /*
- *@route GET /album/
+ *@route GET /albums/
  *@description get all Album
- *@access login required
+ *@access public
  */
-router.get("/", authenticateUser, getAllAlbum);
-
-/*
- *@route PUT /album/:id
- *@description update Album by id
- *@access login required
- */
-router.put("/:id", authenticateUser, updateAlbum);
-
-/*
- *@route DELETE /album/:id
- *@description delete album by id album
- *@access login required
- */
-router.delete("/:id", authenticateUser, deleteAlbum);
+router.get("/", getAllAlbum);
 
 module.exports = router;

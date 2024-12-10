@@ -6,64 +6,74 @@ const deletePlaylist = require("../controllers/playlist/deleteSong");
 const removeSong = require("../controllers/playlist/removeSongToPlaylist");
 const getPlaylistById = require("../controllers/playlist/getPlaylistById");
 const getPlaylistByUserid = require("../controllers/playlist/getPlaylistByUser");
-const authenticateUser = require("../middlewares/authenticateUser");
-
 const validationMiddleware = require("../middlewares/validation.middleware");
-const createPlaylistValidator = require("../middlewares/playlistValidator.js/createPlaylistValidator");
+const createPlaylistSchema = require("../controllers/src/playlistSchemaValidator/createPlaylistSchema");
+const addSongToPlaylistSchema = require("../controllers/src/playlistSchemaValidator/addSongToPlaylistSchema");
+const authenticate = require("../middlewares/authenticate");
+
 var router = express.Router();
 
 /*
- *@route POST /playlist/create
+ *@route POST /playlists/
  *@description create playlist of user
  *@access login required
  */
 router.post(
-  "/create",
-  validationMiddleware(createPlaylistValidator, "body"),
-  authenticateUser,
+  "/",
+  validationMiddleware(createPlaylistSchema, "body"),
+  authenticate(["user", "admin"]),
   createPlaylist
 );
 
 /*
- *@route POST /playlist/:id/add
+ *@route POST /playlists/:id/add
  *@description add song to playlist
  *@access login required
  */
-router.post("/:id/add", authenticateUser, addSongToPlaylist);
+router.post(
+  "/:id/add",
+  validationMiddleware(addSongToPlaylistSchema, "body"),
+  authenticate(["user", "admin"]),
+  addSongToPlaylist
+);
 
 /*
- *@route GET /playlist/
+ *@route GET /playlists/
  *@description Get all playlist
  *@access login required
  */
-router.get("/", authenticateUser, getAllPlaylist);
+router.get("/", authenticate(["user", "admin"]), getAllPlaylist);
 
 /*
- *@route GET /playlist/user/:userID
+ *@route GET /playlists/user/:userID
  *@description get playlist by userID
  *@access login required
  */
-router.get("/user/:userID", authenticateUser, getPlaylistByUserid);
+router.get(
+  "/users/:userID",
+  authenticate(["user", "admin"]),
+  getPlaylistByUserid
+);
 
 /*
- *@route GET /playlist/:id
+ *@route GET /playlists/:id
  *@description Get playlist by playlist id
  *@access login required
  */
-router.get("/:id", authenticateUser, getPlaylistById);
+router.get("/:id", authenticate(["user", "admin"]), getPlaylistById);
 
 /*
- *@route delete /playlist/remove/:id
+ *@route delete /playlists/remove/:id
  *@description remove song from playlist
  *@access login required
  */
-router.delete("/remove/:id", authenticateUser, removeSong);
+router.delete("/remove/:id/song", authenticate(["user", "admin"]), removeSong);
 
 /*
- *@route DELETE /playlist/:id
+ *@route DELETE /playlists/:id
  *@description delete playlist of user
  *@access login required
  */
-router.delete("/delete/:id", authenticateUser, deletePlaylist);
+router.delete("/delete/:id", authenticate(["user", "admin"]), deletePlaylist);
 
 module.exports = router;

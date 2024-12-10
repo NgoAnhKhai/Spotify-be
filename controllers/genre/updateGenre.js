@@ -1,4 +1,4 @@
-const { sendResponse, AppError } = require("../../helpers/utils");
+const { AppError, sendResponse } = require("../../helpers/utils");
 const Genre = require("../../models/genre");
 
 const updateGenre = async (req, res, next) => {
@@ -6,10 +6,16 @@ const updateGenre = async (req, res, next) => {
   const { name, description } = req.body;
 
   try {
-    const genre = await Genre.findById(id);
+    const genre = await Genre.findById(id); // Kiểm tra genre theo id
 
     if (!genre) {
       throw new AppError(404, "Genre not found", "NotFound");
+    }
+
+    // Kiểm tra trùng tên genre
+    const existingGenre = await Genre.findOne({ name, _id: { $ne: id } });
+    if (existingGenre) {
+      throw new AppError(400, "Genre name already exists", "DuplicateGenre");
     }
 
     genre.name = name || genre.name;
