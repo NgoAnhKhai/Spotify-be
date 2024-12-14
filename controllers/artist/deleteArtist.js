@@ -1,5 +1,8 @@
 const { sendResponse, AppError } = require("../../helpers/utils");
 const Artist = require("../../models/artist");
+const User = require("../../models/user");
+const Song = require("../../models/song");
+const Album = require("../../models/Album");
 
 const deleteArtist = async (req, res, next) => {
   const artistId = req.params.id;
@@ -15,13 +18,23 @@ const deleteArtist = async (req, res, next) => {
       throw new AppError(404, "Artist not found");
     }
 
+    await Song.deleteMany({ artistID: artistId });
+
+    await Album.deleteMany({ artistID: artistId });
+
+    const user = await User.findById(artist.userId);
+    if (user) {
+      user.role = "user";
+      await user.save();
+    }
+
     sendResponse(
       res,
       200,
       true,
       { artist },
       null,
-      "Artist deleted successfully"
+      "Artist, songs, albums deleted and user role reverted to 'user' successfully"
     );
   } catch (error) {
     next(error);

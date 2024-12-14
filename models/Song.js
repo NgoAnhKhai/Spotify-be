@@ -12,7 +12,7 @@ const songSchema = new Schema(
     },
     albumID: { type: Schema.Types.ObjectId, ref: "Album" },
     genreID: [{ type: Schema.Types.ObjectId, ref: "Genre" }],
-
+    coverImageURL: { type: String },
     URL: { type: String, required: true },
   },
   { timestamps: true }

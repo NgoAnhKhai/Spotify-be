@@ -27,6 +27,9 @@ const updateAlbumSchema = require("../controllers/src/albumSchemavalidator/updat
 const deleteAlbum = require("../controllers/album/deleteAlbum");
 const updateGenre = require("../controllers/genre/updateGenre");
 const deleteGenre = require("../controllers/genre/deleteGenre");
+const DeleteUser = require("../controllers/user/adminManagement/deleteUser");
+const revertToUser = require("../controllers/user/roleManagement/revertToUser");
+const findUserByName = require("../controllers/user/adminManagement/FindUserbyName");
 
 var router = express.Router();
 router.get("/dashboard", authenticate("admin"), (req, res) => {
@@ -43,6 +46,20 @@ router.get("/dashboard", authenticate("admin"), (req, res) => {
  *@access private
  */
 router.get("/users", authenticate("admin"), getAllUser);
+
+/*
+ *@route GET admin/users/find
+ *@description Find User(For Admin)
+ *@access private
+ */
+router.get("/users/find", authenticate("admin"), findUserByName);
+
+/*
+ *@route GET admin/users
+ *@description Get List All User(For Admin)
+ *@access private
+ */
+router.delete("/users/:id", authenticate("admin"), DeleteUser);
 
 /*
  *@route POST admin/artists
@@ -187,7 +204,14 @@ router.delete("/songs/:id", authenticate("admin"), deleteSong);
  *@description Assign role for user(For Admin)
  *@access private
  */
-router.put("/assign-role", authenticate("admin"), assignRole);
+router.post("/assignRole", authenticate("admin"), assignRole);
+
+/*
+ *@route PUT admin/assign-role
+ *@description Assign role for user(For Admin)
+ *@access private
+ */
+router.post("/revertToUser", authenticate("admin"), revertToUser);
 
 /*
  *@route GET admin/info

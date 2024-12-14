@@ -3,9 +3,10 @@ const User = require("../../../models/user");
 
 const updateUser = async (req, res, next) => {
   const { username, email } = req.body;
+  const { id } = req.params;
 
   try {
-    const user = await User.findById(req.user.userId);
+    const user = await User.findById(id);
 
     if (!user) {
       throw new AppError(404, "User not found", "NotFound");

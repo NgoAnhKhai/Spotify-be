@@ -6,6 +6,8 @@ const getUserPlaylist = require("../controllers/user/usersManagement/getUserPlay
 const updateUser = require("../controllers/user/usersManagement/updateUser");
 const cancelSubscription = require("../controllers/user/usersManagement/cancelSubscription");
 const authenticate = require("../middlewares/authenticate");
+const validationMiddleware = require("../middlewares/validation.middleware");
+const userChangePassSchema = require("../controllers/src/userSchemaValidator/userChangePassSchema");
 var router = express.Router();
 
 /*
@@ -27,7 +29,8 @@ router.put("/:id/profile", authenticate(["user", "admin"]), updateUser);
  *@access Login Required
  */
 router.put(
-  "/:id/profile/password",
+  "/:id/profile/changePassword",
+  validationMiddleware(userChangePassSchema, "body"),
   authenticate(["user", "admin"]),
   changePassword
 );

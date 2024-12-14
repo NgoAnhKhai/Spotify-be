@@ -9,7 +9,7 @@ const updateSongSchema = Joi.object({
 
   artistID: Joi.string().regex(/^[0-9a-fA-F]{24}$/),
   albumID: Joi.string().regex(/^[0-9a-fA-F]{24}$/),
-
+  coverImageURL: Joi.string().uri(),
   genreID: Joi.string()
     .regex(/^[0-9a-fA-F]{24}$/)
     .min(1),

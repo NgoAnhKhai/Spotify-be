@@ -6,8 +6,8 @@ const Song = require("../../models/song");
 const createSong = async (req, res, next) => {
   const info = req.body;
 
-  if (!info) {
-    throw new AppError("Please provide song information", 400);
+  if (!info || !info.title || !info.artistID || !info.albumID) {
+    throw new AppError("Please provide all required song information", 400);
   }
 
   try {
@@ -27,26 +27,31 @@ const createSong = async (req, res, next) => {
     const song = await Song.create(info);
 
     const artist = await Artist.findById(info.artistID);
-    if (artist) {
-      if (!Array.isArray(artist.songs)) {
-        artist.songs = [];
-      }
-      artist.songs.push(song._id);
-      await artist.save();
-    } else {
+    if (!artist) {
       throw new AppError("Artist not found", 404);
     }
 
+    if (!Array.isArray(artist.songs)) {
+      artist.songs = [];
+    }
+    artist.songs.push(song._id);
+    await artist.save();
+
     const album = await Album.findById(info.albumID);
-    if (album) {
-      if (!Array.isArray(album.songs)) {
-        album.songs = [];
-      }
-      album.songs.push(song._id);
-      await album.save();
-    } else {
+    if (!album) {
       throw new AppError("Album not found", 404);
     }
+
+    if (!Array.isArray(album.listSong)) {
+      album.listSong = [];
+    }
+    album.listSong.push(song._id);
+
+    if (!Array.isArray(album.songs)) {
+      album.songs = [];
+    }
+    album.songs.push(song._id);
+    await album.save();
 
     await song.populate([
       {

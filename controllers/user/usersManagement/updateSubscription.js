@@ -15,13 +15,23 @@ const updateSubscription = async (req, res, next) => {
       user.subscriptionType === "Premium" &&
       user.premiumExpiryDate > Date.now()
     ) {
-      const currentRemainingDays = Math.ceil(
-        (user.premiumExpiryDate - Date.now()) / (1000 * 3600 * 24)
+      const currentRemainingTime = user.premiumExpiryDate - Date.now();
+      const currentRemainingDays = Math.floor(
+        currentRemainingTime / (1000 * 3600 * 24)
+      );
+      const currentRemainingHours = Math.floor(
+        (currentRemainingTime % (1000 * 3600 * 24)) / (1000 * 3600)
+      );
+      const currentRemainingMinutes = Math.floor(
+        (currentRemainingTime % (1000 * 3600)) / (1000 * 60)
+      );
+      const currentRemainingSeconds = Math.floor(
+        (currentRemainingTime % (1000 * 60)) / 1000
       );
 
       throw new AppError(
         400,
-        `You already have a Premium subscription. ${currentRemainingDays} days remaining.`,
+        `You already have a Premium subscription. ${currentRemainingDays} days, ${currentRemainingHours} hours, ${currentRemainingMinutes} minutes, and ${currentRemainingSeconds} seconds remaining.`,
         "BadRequest"
       );
     }
@@ -49,9 +59,15 @@ const updateSubscription = async (req, res, next) => {
 
     await user.save();
 
-    const remainingDays = Math.ceil(
-      (user.premiumExpiryDate - Date.now()) / (1000 * 3600 * 24)
+    const remainingTime = user.premiumExpiryDate - Date.now();
+    const remainingDays = Math.floor(remainingTime / (1000 * 3600 * 24));
+    const remainingHours = Math.floor(
+      (remainingTime % (1000 * 3600 * 24)) / (1000 * 3600)
     );
+    const remainingMinutes = Math.floor(
+      (remainingTime % (1000 * 3600)) / (1000 * 60)
+    );
+    const remainingSeconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
 
     sendResponse(
       res,
@@ -61,6 +77,9 @@ const updateSubscription = async (req, res, next) => {
         user: {
           ...user.toObject(),
           remainingDays,
+          remainingHours,
+          remainingMinutes,
+          remainingSeconds,
         },
       },
       null,

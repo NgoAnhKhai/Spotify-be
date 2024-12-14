@@ -3,6 +3,11 @@ const Song = require("../../models/song");
 
 const searchSongs = async (req, res, next) => {
   const { title, page = 1, limit = 5 } = req.query;
+
+  if (title && typeof title !== "string") {
+    return next(new AppError("Title must be a string", 400));
+  }
+
   try {
     const searchQuery = [];
 
@@ -16,12 +21,15 @@ const searchSongs = async (req, res, next) => {
     if (searchQuery.length === 0) {
       throw new AppError("Please provide a search query", 400);
     }
+
     const skip = (page - 1) * limit;
+
     const songs = await Song.find({ $or: searchQuery })
       .skip(skip)
       .limit(parseInt(limit))
       .sort({ createdAt: -1 })
       .exec();
+
     const totalSongs = await Song.countDocuments({ $or: searchQuery });
 
     if (songs.length === 0) {

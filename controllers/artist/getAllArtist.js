@@ -12,6 +12,7 @@ const getAllArtist = async (req, res, next) => {
       .limit(limit)
       .sort({ createdAt: -1 })
       .populate("songs")
+      .populate("albums")
       .exec();
 
     const totalArtists = await Artist.countDocuments();

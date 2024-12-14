@@ -4,13 +4,30 @@ const Song = require("../../models/song");
 
 const updateSong = async (req, res) => {
   const { id } = req.params;
-  const { title, duration, popularity, artistID, albumID, genreID, URL } =
-    req.body;
+  const {
+    title,
+    duration,
+    popularity,
+    artistID,
+    albumID,
+    genreID,
+    URL,
+    coverImageURL,
+  } = req.body;
 
   try {
     const updatedSong = await Song.findByIdAndUpdate(
       id,
-      { title, duration, popularity, artistID, albumID, genreID, URL },
+      {
+        title,
+        duration,
+        popularity,
+        artistID,
+        albumID,
+        genreID,
+        URL,
+        coverImageURL,
+      },
       { new: true }
     );
 

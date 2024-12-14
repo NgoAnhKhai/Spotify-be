@@ -19,7 +19,7 @@ var router = express.Router();
  *@access login required
  */
 router.post(
-  "/",
+  "/:id",
   validationMiddleware(createPlaylistSchema, "body"),
   authenticate(["user", "admin"]),
   createPlaylist
@@ -67,13 +67,13 @@ router.get("/:id", authenticate(["user", "admin"]), getPlaylistById);
  *@description remove song from playlist
  *@access login required
  */
-router.delete("/remove/:id/song", authenticate(["user", "admin"]), removeSong);
+router.post("/:id/remove", authenticate(["user", "admin"]), removeSong);
 
 /*
  *@route DELETE /playlists/:id
  *@description delete playlist of user
  *@access login required
  */
-router.delete("/delete/:id", authenticate(["user", "admin"]), deletePlaylist);
+router.delete("/:id", authenticate(["user", "admin"]), deletePlaylist);
 
 module.exports = router;

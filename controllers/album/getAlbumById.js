@@ -6,7 +6,12 @@ const getAlbumById = async (req, res, next) => {
   const { id } = req.params;
 
   try {
-    const album = await Album.findById(id).populate("artistID listSong");
+    const album = await Album.findById(id)
+      .populate({ path: "listSong", model: "Song" })
+      .populate({
+        path: "artistID",
+        model: "Artist",
+      });
     if (!album) {
       throw new AppError("Album not found", 404);
     }

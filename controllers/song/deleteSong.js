@@ -1,5 +1,6 @@
 const { AppError, sendResponse } = require("../../helpers/utils");
 const Album = require("../../models/Album");
+const Artist = require("../../models/artist");
 const Song = require("../../models/song");
 
 const deleteSong = async (req, res, next) => {
@@ -18,6 +19,11 @@ const deleteSong = async (req, res, next) => {
       await album.save();
     }
 
+    const artist = await Artist.findById(song.artistID);
+    if (artist) {
+      artist.songs = artist.songs.filter((songId) => songId.toString() !== id);
+      await artist.save();
+    }
     sendResponse(res, 200, true, null, null, "Song deleted successfully");
   } catch (error) {
     next(error);

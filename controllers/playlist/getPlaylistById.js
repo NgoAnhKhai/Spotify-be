@@ -4,7 +4,13 @@ const Playlist = require("../../models/Playlist");
 const getPlaylistById = async (req, res, next) => {
   const id = req.params.id;
   try {
-    const playlist = await Playlist.findById(id).populate("songs");
+    const playlist = await Playlist.findById(id).populate({
+      path: "songs",
+      populate: {
+        path: "artistID",
+        model: "Artist",
+      },
+    });
     if (!playlist) {
       throw new AppError("Playlist not found", 404);
     }
@@ -14,7 +20,7 @@ const getPlaylistById = async (req, res, next) => {
       true,
       { playlist },
       null,
-      "Playlist retrived successfully"
+      "Playlist By ID successfully"
     );
   } catch (error) {
     next(error);

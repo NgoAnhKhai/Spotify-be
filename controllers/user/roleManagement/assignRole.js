@@ -7,7 +7,6 @@ const assignRole = async (req, res, next) => {
 
   try {
     const user = await User.findById(userId);
-
     if (!user) {
       throw new AppError("User not found", 404);
     }

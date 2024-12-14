@@ -1,7 +1,7 @@
 const Joi = require("joi");
 
 const updateArtistSchema = Joi.object({
-  name: Joi.string().required(),
+  name: Joi.string().optional(),
   genres: Joi.optional().optional(),
   followersCount: Joi.number().integer().min(0).optional(),
   imageURL: Joi.string().uri().optional(),

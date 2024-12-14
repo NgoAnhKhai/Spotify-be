@@ -7,7 +7,11 @@ const getAllSong = async (req, res, next) => {
     const page = parseInt(req.query.page) || 1;
     const skip = (page - 1) * limit;
 
-    const song = await Song.find().skip(skip).limit(limit).exec();
+    const song = await Song.find()
+      .populate("artistID")
+      .skip(skip)
+      .limit(limit)
+      .exec();
     const totalSong = await Song.countDocuments();
     if (!song || song.length === 0) {
       return sendResponse(res, 404, false, null, null, "No found");

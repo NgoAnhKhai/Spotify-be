@@ -11,7 +11,7 @@ const getUserPlaylist = async (req, res, next) => {
       .skip(skip)
       .limit(limit)
       .populate("userID", "username email")
-      .populate("songs", "title artist")
+      .populate("songs")
       .exec();
     const totalPlaylists = await Playlist.countDocuments({
       userID: req.user.userId,

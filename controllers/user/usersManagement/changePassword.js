@@ -4,7 +4,6 @@ const User = require("../../../models/user");
 
 const changePassword = async (req, res, next) => {
   const { oldPassword, newPassword, confirmPassword } = req.body;
-
   try {
     const user = await User.findById(req.user.userId);
 

@@ -8,9 +8,11 @@ const getAllUser = async (req, res, next) => {
     const skip = (page - 1) * limit;
     const users = await User.find().skip(skip).limit(limit);
     const totalUsers = await User.countDocuments();
-    if (!users || users.length === 0) {
+
+    if (users.length === 0) {
       return sendResponse(res, 404, false, null, null, "No users found");
     }
+
     const totalPages = Math.ceil(totalUsers / limit);
     sendResponse(
       res,
@@ -26,9 +28,8 @@ const getAllUser = async (req, res, next) => {
         },
       },
       null,
-      "Successfully"
+      "Fetched users successfully"
     );
-    console.log("Users data", users);
   } catch (error) {
     next(error);
   }
